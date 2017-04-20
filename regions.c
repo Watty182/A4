@@ -100,6 +100,13 @@ void validationStation()
     
     while( curReg != NULL ) //region traversal
     {
+#ifndef NDEBUG
+    assert(curReg->name != NULL);
+    assert(curReg->name[0] != '\0');
+    assert(curReg->size > 0);
+    assert((curReg->size % 8) == 0)
+    assert(curReg->memory != NULL);
+#endif
         void* memLocation = NULL;
         int memoryUsed = 0;
         
@@ -107,9 +114,18 @@ void validationStation()
 
         while( curBlk != NULL ) //block traversal
         {
+#ifndef NDEBUG
+    assert(curBlk->start != NULL);
+    assert((curBlk->start - curReg->memory) < curReg->size);
+    assert(curBlk->size > 0);
+    assert((curBlk->size % 8) == 0);
+    assert(curBlk->start > memLocation);
+#endif
             memLocation = curBlk->start;
             memoryUsed += curBlk->size;
-
+#ifndef NDEBUG
+    assert(memoryUsed <= curReg->size);
+#endif
             acqBlk++;
 
             curBlk = curBlk->next;
