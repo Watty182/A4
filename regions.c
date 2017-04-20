@@ -252,6 +252,39 @@ block* validBlock(region* reg, r_size_t size)
         void* start = reg->memory; //placehold the start of the blocks of memory
 
         block* curr =  reg->blocks;
-        block** next = &(reg->blocks); //for use of ease of traversal lol
+        block** next = &(reg->blocks); //for use of ease of traversal
+
+        Boolean room = false;
+
+        if( ((curr == NULL) && (reg->size >= size)) || ((curr != NULL) && ((curr->start - start) >= size)) )
+        {
+            room = true;
+        }
+
+        while( (curr != NULL) && !room)
+        {
+            start = curr->start + curr->size;
+            end = start - reg->memory;
+            next = &(curr->next);
+
+            if( curr->next != NULL && ((curr->next->start - start) >= size) ) //if next block is not null, and holds more than size required
+            {
+                room = true;
+            }
+            if( curr->next == NULL && ((reg->size - end) >= size)) //if remaining size in region is larger than required size
+            {
+                room = true;
+            }
+            
+            if( !room ) //move to next block
+            {
+                curr = curr->next;
+            }
+        }
+        if (room)
+        {
+            new = //allocate a block...
+            *next = new;
+        }
     }
 }
