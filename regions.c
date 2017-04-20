@@ -93,62 +93,6 @@ Boolean rchoose( const char *region_name )
     validationStation();
     return result;
 }
-
-//traverse list of regions and ensure number of regions and blocks
-//counted are equal to current number of regions and blocks created
-void validationStation()
-{
-    //... count regions and blocks to start
-
-    int acqReg = 0;
-    int acqBlk = 0;
-
-
-    region* curReg = top;
-    
-    while( curReg != NULL ) //region traversal
-    {
-#ifndef NDEBUG
-    assert(curReg->name != NULL);
-    assert(curReg->name[0] != '\0');
-    assert(curReg->size > 0);
-    assert((curReg->size % 8) == 0)
-    assert(curReg->memory != NULL);
-#endif
-        void* memLocation = NULL;
-        int memoryUsed = 0;
-        
-        block* curBlk = curReg->blocks;
-
-        while( curBlk != NULL ) //block traversal
-        {
-#ifndef NDEBUG
-    assert(curBlk->start != NULL);
-    assert((curBlk->start - curReg->memory) < curReg->size);
-    assert(curBlk->size > 0);
-    assert((curBlk->size % 8) == 0);
-    assert(curBlk->start > memLocation);
-#endif
-            memLocation = curBlk->start;
-            memoryUsed += curBlk->size;
-#ifndef NDEBUG
-    assert(memoryUsed <= curReg->size);
-#endif
-            acqBlk++;
-
-            curBlk = curBlk->next;
-        }
-        acqReg++;
-        curReg = curReg->next;
-    }
-
-    //... need assertions... everywhere.
-}
-//ensures value passed to function is going to return as the next possible value of 8
-r_size_t roundToEight(r_size_t val, int mtpl)
-{
-    return (r_size_t)((((int)((val-1)/mtpl))+1) * mtpl);
-}
 const char *rchosen()
 {
 
@@ -220,3 +164,59 @@ Boolean freeBlock (block** delete)
     }
     return result;
 } 
+
+//traverse list of regions and ensure number of regions and blocks
+//counted are equal to current number of regions and blocks created
+void validationStation()
+{
+    //... count regions and blocks to start
+
+    int acqReg = 0;
+    int acqBlk = 0;
+
+
+    region* curReg = top;
+    
+    while( curReg != NULL ) //region traversal
+    {
+#ifndef NDEBUG
+    assert(curReg->name != NULL);
+    assert(curReg->name[0] != '\0');
+    assert(curReg->size > 0);
+    assert((curReg->size % 8) == 0)
+    assert(curReg->memory != NULL);
+#endif
+        void* memLocation = NULL;
+        int memoryUsed = 0;
+        
+        block* curBlk = curReg->blocks;
+
+        while( curBlk != NULL ) //block traversal
+        {
+#ifndef NDEBUG
+    assert(curBlk->start != NULL);
+    assert((curBlk->start - curReg->memory) < curReg->size);
+    assert(curBlk->size > 0);
+    assert((curBlk->size % 8) == 0);
+    assert(curBlk->start > memLocation);
+#endif
+            memLocation = curBlk->start;
+            memoryUsed += curBlk->size;
+#ifndef NDEBUG
+    assert(memoryUsed <= curReg->size);
+#endif
+            acqBlk++;
+
+            curBlk = curBlk->next;
+        }
+        acqReg++;
+        curReg = curReg->next;
+    }
+
+    //... need assertions... everywhere.
+}
+//ensures value passed to function is going to return as the next possible value of 8
+r_size_t roundToEight(r_size_t val, int mtpl)
+{
+    return (r_size_t)((((int)((val-1)/mtpl))+1) * mtpl);
+}
