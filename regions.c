@@ -41,13 +41,20 @@ region* selected = NULL;
 
 Boolean rinit( const char *region_name, r_size_t region_size )
 {
+#ifndef NDEBUG
+    assert(region_name != NULL);
+    assert((char)*region_name != '\0');
+    assert(region_size > 0);
+#endif
     Boolean result = false;
 
     if( (region_name != NULL) && ((char)*region_name != '\0') && (region_size > 0) && (*regionSearch(region_name) == NULL))
     {
         r_size_t size = roundToEight(region_size, MOD8); //next step before testing; implement in internal_regions.h
         region* new = malloc(sizeof(region)); //allocate memory for new region
-        
+#ifndef NDEBUG
+    assert(new != NULL);
+#endif
         if( new != NULL )
         {
             new->blocks = NULL;
@@ -63,7 +70,8 @@ Boolean rinit( const char *region_name, r_size_t region_size )
             result = true;
         }
     }
-    //should create method to ensure region is valid...
+    //should create method to ensure region is valid...and done(?)
+    validationStation();
     return result;
 }
 
@@ -82,7 +90,7 @@ Boolean rchoose( const char *region_name )
     }
 
     // workin on that region validator meow... >.<
-
+    validationStation();
     return result;
 }
 
@@ -198,7 +206,7 @@ block** blockSearch (region* query, void* address)
     return curr;
 }
 
-//functions below are for aquiring and manipulating blocks of memory
+//functions below are for acquiring and manipulating blocks of memory
 
 Boolean freeBlock (block** delete)
 {
