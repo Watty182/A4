@@ -45,7 +45,7 @@ Boolean rinit( const char *region_name, r_size_t region_size )
 
     if( (region_name != NULL) && ((char)*region_name != '\0') && (region_size > 0) && (*regionSearch(region_name) == NULL))
     {
-        r_size_t size = roundToEight(region_size, MOD8);
+        r_size_t size = roundToEight(region_size, MOD8); //next step before testing; implement in internal_regions.h
         region* new = malloc(sizeof(region)); //allocate memory for new region
         
         if( new != NULL )
