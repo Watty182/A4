@@ -86,6 +86,45 @@ Boolean rchoose( const char *region_name )
     return result;
 }
 
+//traverse list of regions and ensure number of regions and blocks
+//counted are equal to current number of regions and blocks created
+void validationStation()
+{
+    //... count regions and blocks to start
+
+    int acqReg = 0;
+    int acqBlk = 0;
+
+
+    region* curReg = top;
+    
+    while( curReg != NULL ) //region traversal
+    {
+        void* memLocation = NULL;
+        int memoryUsed = 0;
+        
+        block* curBlk = curReg->blocks;
+
+        while( curBlk != NULL ) //block traversal
+        {
+            memLocation = curBlk->start;
+            memoryUsed += curBlk->size;
+
+            acqBlk++;
+
+            curBlk = curBlk->next;
+        }
+        acqReg++;
+        curReg = curReg->next;
+    }
+
+    //... need assertions... everywhere.
+}
+//ensures value passed to function is going to return as the next possible value of 8
+r_size_t roundToEight(r_size_t val, int mtpl)
+{
+    return (r_size_t)((((int)((val-1)/mtpl))+1) * mtpl);
+}
 const char *rchosen()
 {
 
