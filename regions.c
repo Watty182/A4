@@ -69,7 +69,21 @@ Boolean rinit( const char *region_name, r_size_t region_size )
 
 Boolean rchoose( const char *region_name )
 {
+    Boolean result = false;
 
+    if( (region_name != NULL) && ((char)*region_name != '\0') )
+    {
+        region* toSelect = *regionSearch(region_name);
+        if( toSelect != NULL)
+        {
+            selected = toSelect;
+            result = true;
+        }
+    }
+
+    // workin on that region validator meow... >.<
+
+    return result;
 }
 
 const char *rchosen()
