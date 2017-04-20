@@ -93,14 +93,34 @@ Boolean rchoose( const char *region_name )
     validationStation();
     return result;
 }
+
 const char *rchosen()
 {
+    char* result = NULL;
+    if(selected != NULL)
+    {
+        result = selected->name;
+    }
+    validationStation();
 
+    return result;
 }
 
 void *ralloc( r_size_t block_size )
 {
+    //starting assertions from the get-go b/c ez-er
+#ifndef NDEBUG
+    assert(selected != NULL);
+    assert(block_size > 0);
+    assert(block_size <= selected->size);
+#endif
+    void* result = NULL;
 
+    if( (selected != NULL) && (block_size > 0) && (block_size <= selected->size))
+    {
+        //acquire a block... 
+        block* new = 
+    }
 }
 
 r_size_t rsize( void *block_ptr )
@@ -219,4 +239,19 @@ void validationStation()
 r_size_t roundToEight(r_size_t val, int mtpl)
 {
     return (r_size_t)((((int)((val-1)/mtpl))+1) * mtpl);
+}
+
+//get the blocks of a region, traverse the blocks until there is space, allocate more memory,
+// and return a pointer to the block.
+block* validBlock(region* reg, r_size_t size)
+{
+    block* new = NULL;
+    if(reg != NULL)
+    {
+        int end = 0; //placehold the end of the blocks
+        void* start = reg->memory; //placehold the start of the blocks of memory
+
+        block* curr =  reg->blocks;
+        block** next = &(reg->blocks); //for use of ease of traversal lol
+    }
 }
