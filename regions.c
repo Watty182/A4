@@ -208,6 +208,10 @@ void rdump()
     validationStation(); //make sure data is valid before printing it.
 }
 
+//-----------------------------------------------------------------------------------
+//|                             ADDITIONAL FUNCTIONS                                |
+//-----------------------------------------------------------------------------------
+
 //functions below are designed to help find regions and blocks
 
 region **regionSearch(const char *name)
