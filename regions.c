@@ -73,7 +73,7 @@ Boolean rinit( const char *region_name, r_size_t region_size )
             result = true;
         }
     }
-    //should create method to ensure region is valid...and done(?)
+    //must create method to ensure region is valid...and done(?)
     validationStation();
     return result;
 }
@@ -129,6 +129,8 @@ void *ralloc( r_size_t block_size )
             result = new->start;
             numBlks++;
         }
+        validationStation();
+        return result;
     }
 }
 
@@ -203,6 +205,7 @@ void rdestroy( const char *region_name )
 
 void rdump()
 {
+    validationStation(); //make sure data is valid before printing it.
 
 }
 
@@ -306,7 +309,7 @@ void validationStation()
 //ensures value passed to function is going to return as the next possible value of 8
 r_size_t roundToEight(r_size_t val, int mtpl)
 {
-    return (r_size_t)((((int)((val-1)/mtpl))+1) * mtpl);
+    return (r_size_t)((((int)((val-1)/mtpl))+1) * mtpl); //math.jpeg
 }
 
 //get the blocks of a region, traverse the blocks until there is space, allocate more memory,
