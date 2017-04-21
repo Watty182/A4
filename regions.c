@@ -97,7 +97,7 @@ Boolean rchoose( const char *region_name )
 const char *rchosen()
 {
     char* result = NULL;
-    if(selected != NULL)
+    if( selected != NULL )
     {
         result = selected->name;
     }
@@ -116,7 +116,7 @@ void *ralloc( r_size_t block_size )
 #endif
     void* result = NULL;
 
-    if( (selected != NULL) && (block_size > 0) && (block_size <= selected->size))
+    if( (selected != NULL) && (block_size > 0) && (block_size <= selected->size) )
     {
         //acquire a block... 
         block* new = 
@@ -275,7 +275,6 @@ block* validBlock(region* reg, r_size_t size)
             {
                 room = true;
             }
-            
             if( !room ) //move to next block
             {
                 curr = curr->next;
@@ -283,8 +282,25 @@ block* validBlock(region* reg, r_size_t size)
         }
         if (room)
         {
-            new = //allocate a block...
+            new = reBlock(start, size, *next);
+            
             *next = new;
         }
     }
+}
+
+// Fill a block of memory with 0s to help reallocate memory.
+block* reBlock(void* start, r_size_t size, block* next)
+{
+    block* new = malloc(sizeof(block));
+
+    if( new != NULL )
+    {
+        new->start = start;
+        new->size = size;
+        new->next = next;
+        memset(new->start, 0, new->size); // 
+    }
+
+    return new;
 }
