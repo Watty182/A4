@@ -125,7 +125,17 @@ void *ralloc( r_size_t block_size )
 
 r_size_t rsize( void *block_ptr )
 {
+    int size = 0;
+    block** pickBlk = blockSearch(selected, block_ptr);
 
+    if( (pickBlk != NULL) && ((*pickBlk) != NULL) )
+    {
+        size = (*select)->size;
+    } 
+
+    validationStation();
+
+    return size;
 }
 
 Boolean rfree( void *block_ptr )
