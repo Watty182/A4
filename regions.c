@@ -33,8 +33,8 @@ typedef struct BLOCK
     int size;
 } block;
 
-int numRegions = 0;
-int numBlocks = 0;
+int numRegs = 0;
+int numBlks = 0;
 
 region* top = NULL;
 region* selected = NULL;
@@ -46,15 +46,18 @@ Boolean rinit( const char *region_name, r_size_t region_size )
     assert((char)*region_name != '\0');
     assert(region_size > 0);
 #endif
+
     Boolean result = false;
 
     if( (region_name != NULL) && ((char)*region_name != '\0') && (region_size > 0) && (*regionSearch(region_name) == NULL))
     {
         r_size_t size = roundToEight(region_size, MOD8); //next step before testing; implement in internal_regions.h
         region* new = malloc(sizeof(region)); //allocate memory for new region
+
 #ifndef NDEBUG
     assert(new != NULL);
 #endif
+
         if( new != NULL )
         {
             new->blocks = NULL;
@@ -66,7 +69,7 @@ Boolean rinit( const char *region_name, r_size_t region_size )
 
             selected = new; //assign the new region as the selected region
             
-            numRegions++;
+            numRegs++;
             result = true;
         }
     }
@@ -114,17 +117,27 @@ void *ralloc( r_size_t block_size )
     assert(block_size > 0);
     assert(block_size <= selected->size);
 #endif
+
     void* result = NULL;
 
     if( (selected != NULL) && (block_size > 0) && (block_size <= selected->size) )
     {
         //acquire a block... 
-        block* new = 
+        block* new = validBlock(selected, roundToEight(block_size, MOD8));
+        if( new != NULL )
+        {
+            result = new->start;
+            numBlks++;
+        }
     }
 }
 
 r_size_t rsize( void *block_ptr )
 {
+#ifndef NDEBUG
+    assert(block_ptr != NULL);
+#endif
+
     int size = 0;
     block** pickBlk = blockSearch(selected, block_ptr);
 
@@ -140,7 +153,16 @@ r_size_t rsize( void *block_ptr )
 
 Boolean rfree( void *block_ptr )
 {
+    Boolean result = false;
+    
+    if(freeBlock(blockSearch(selected, block_ptr)))
+    {
+        result = true;
+        numBlks--;
+    }
+    validationStation();
 
+    return result;
 }
 
 void rdestroy( const char *region_name )
@@ -216,6 +238,7 @@ void validationStation()
     assert((curReg->size % 8) == 0)
     assert(curReg->memory != NULL);
 #endif
+
         void* memLocation = NULL;
         int memoryUsed = 0;
         
@@ -223,6 +246,7 @@ void validationStation()
 
         while( curBlk != NULL ) //block traversal
         {
+
 #ifndef NDEBUG
     assert(curBlk->start != NULL);
     assert((curBlk->start - curReg->memory) < curReg->size);
@@ -230,11 +254,14 @@ void validationStation()
     assert((curBlk->size % 8) == 0);
     assert(curBlk->start > memLocation);
 #endif
+
             memLocation = curBlk->start;
             memoryUsed += curBlk->size;
+
 #ifndef NDEBUG
     assert(memoryUsed <= curReg->size);
 #endif
+
             acqBlk++;
 
             curBlk = curBlk->next;
