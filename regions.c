@@ -206,6 +206,41 @@ void rdestroy(const char *region_name)
 void rdump()
 {
     validationStation(); //make sure data is valid before printing it.
+    region *start = top;
+    float percent;
+    while (start != NULL)
+    {
+        printf("Region Name: %s", start->name);
+        printf("Size of Region: %d bytes", start->size);
+        percent = ((float)freeRegSpace(start)/start->size) * 100;
+        printf("%.2f%% free.", percent);
+        printBlocks(start);
+        start = start->next;
+    }
+}
+
+// Print help functions
+void printBlocks(region *name)
+{
+    block *current = name->blocks;
+    while (current != NULL)
+    {
+        printf("%p: %d bytes", current->start, current->size);
+        current = current->next;
+    }
+}
+
+int freeRegSpace(region* current)
+{
+    int total = current->size;
+    block* lego = current->blocks;
+
+    while(lego != NULL)
+    {
+        total -= lego->size;
+        lego = lego->next;
+    }
+    return total;
 }
 
 //-----------------------------------------------------------------------------------
