@@ -13,5 +13,7 @@ r_size_t roundToEight( r_size_t, int );
 region** regionSearch( const char* );
 block** blockSearch( region*, void* );
 Boolean freeBlock( block** );
+block* validBlock( region*, r_size_t );
+block* reBlock( void*, r_size_t, block* );
 void validationStation();
 #endif
