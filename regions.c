@@ -155,6 +155,11 @@ Boolean rfree( void *block_ptr )
 {
     Boolean result = false;
     
+#ifndef NDEBUG
+    assert(selected != NULL);
+    assert(block_ptr != NULL);
+#endif
+
     if(freeBlock(blockSearch(selected, block_ptr)))
     {
         result = true;
@@ -167,7 +172,33 @@ Boolean rfree( void *block_ptr )
 
 void rdestroy( const char *region_name )
 {
+#ifndef NDEBUG
+    assert(region_name != NULL);
+    assert((char)*region_name != '\0');
+#endif
 
+    if( (region_name != NULL) && ((char)*region_name != '\0')) 
+    {
+        region** toDestroy = regionSearch(region_name);
+        if( (toDestroy != NULL) && (*toDestroy != NULL) )
+        {
+            if( selected == *toDestroy )
+            {
+                selected == NULL;
+            }
+            while( (*toDestroy)->blocks != NULL)
+            {
+                freeBlock(blockSearch(*toDestroy, (*toDestroy)->blocks->start));
+                numBlks--;
+            }
+            free((*toDestroy)->memory);
+            region* toFree = *toDestroy;
+            *toDestroy = (*toDestroy)->next;
+            free(toFree);
+            numRegs--;
+        }
+    }
+    validationStation();
 }
 
 void rdump()
