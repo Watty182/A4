@@ -17,21 +17,21 @@
 
 // define architecture of memory regions
 
-typedef struct REGION
+struct REGION
 {
     region *next;
     void *memory;
     char *name;
     int size;
     block *blocks;
-} region;
+};
 
-typedef struct BLOCK
+struct BLOCK
 {
     block *next;
     void *start;
     int size;
-} block;
+};
 
 int numRegs = 0;
 int numBlks = 0;
@@ -129,9 +129,9 @@ void *ralloc(r_size_t block_size)
             result = new->start;
             numBlks++;
         }
-        validationStation();
-        return result;
     }
+    validationStation();
+    return result;
 }
 
 r_size_t rsize(void *block_ptr)
@@ -145,7 +145,7 @@ r_size_t rsize(void *block_ptr)
 
     if ((pickBlk != NULL) && ((*pickBlk) != NULL))
     {
-        size = (*select)->size;
+        size = (*pickBlk)->size;
     }
 
     validationStation();
@@ -186,7 +186,7 @@ void rdestroy(const char *region_name)
         {
             if (selected == *toDestroy)
             {
-                selected == NULL;
+                selected = NULL;
             }
             while ((*toDestroy)->blocks != NULL)
             {
@@ -208,13 +208,15 @@ void rdump()
     validationStation(); //make sure data is valid before printing it.
     region *start = top;
     float percent;
+    printf("--------------------------------------------------\n");
     while (start != NULL)
     {
-        printf("Region Name: %s", start->name);
-        printf("Size of Region: %d bytes", start->size);
+        printf("Region Name: %s\n", start->name);
+        printf("Size of Region: %d bytes\n", start->size);
         percent = ((float)freeRegSpace(start) / start->size) * 100;
-        printf("%.2f%% free.", percent);
+        printf("%.2f%% free.\n", percent);
         printBlocks(start);
+        printf("--------------------------------------------------\n");
         start = start->next;
     }
 }
@@ -225,7 +227,7 @@ void printBlocks(region *name)
     block *current = name->blocks;
     while (current != NULL)
     {
-        printf("%p: %d bytes", current->start, current->size);
+        printf("%p: %d bytes\n", current->start, current->size);
         current = current->next;
     }
 }
@@ -251,9 +253,9 @@ int freeRegSpace(region *current)
 
 region **regionSearch(const char *name)
 {
-    region **curr = &top //pointer to the address of top in order to locate the proper region
+    region **curr = &top; //pointer to the address of top in order to locate the proper region
 
-                    while (((*curr) != NULL) && (strcmp((*curr)->name, name) != 0))
+    while (((*curr) != NULL) && (strcmp((*curr)->name, name) != 0))
     {
         curr = &((*curr)->next);
     }
@@ -306,8 +308,8 @@ void validationStation()
         assert(curReg->name != NULL);
         assert(curReg->name[0] != '\0');
         assert(curReg->size > 0);
-        assert((curReg->size % 8) == 0)
-            assert(curReg->memory != NULL);
+        assert((curReg->size % 8) == 0);
+        assert(curReg->memory != NULL);
 #endif
 
         void *memLocation = NULL;
@@ -395,6 +397,7 @@ block *validBlock(region *reg, r_size_t size)
             *next = new;
         }
     }
+    return new;
 }
 
 // Fill a block of memory with 0s to help reallocate memory.
