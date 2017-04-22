@@ -14,7 +14,7 @@ OBJS = $(OBJDIR)/main.o $(OBJDIR)/regions.o
 $(PROG): $(OBJS) $(OBJDIR)
 	$(CC) $(CFLAGS) $(OBJS) -o $(PROG)
 
-$(OBJDIR)/table.o: region.c $(HDRS) $(OBJDIR)
+$(OBJDIR)/region.o: region.c $(HDRS) $(OBJDIR)
 	$(CC) $(CFLAGS) -c region.c -o $(OBJDIR)/region.o
 
 $(OBJDIR)/main.o: main.c $(HDRS) $(OBJDIR)

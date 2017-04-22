@@ -212,7 +212,7 @@ void rdump()
     {
         printf("Region Name: %s", start->name);
         printf("Size of Region: %d bytes", start->size);
-        percent = ((float)freeRegSpace(start)/start->size) * 100;
+        percent = ((float)freeRegSpace(start) / start->size) * 100;
         printf("%.2f%% free.", percent);
         printBlocks(start);
         start = start->next;
@@ -230,12 +230,12 @@ void printBlocks(region *name)
     }
 }
 
-int freeRegSpace(region* current)
+int freeRegSpace(region *current)
 {
     int total = current->size;
-    block* lego = current->blocks;
+    block *lego = current->blocks;
 
-    while(lego != NULL)
+    while (lego != NULL)
     {
         total -= lego->size;
         lego = lego->next;
